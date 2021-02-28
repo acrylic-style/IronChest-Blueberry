@@ -1,0 +1,16 @@
+id: ironchest
+version: "${version}"
+main: com.progwml6.ironchest.IronChests
+name: IronChest
+authors:
+  - "acrylic-style"
+  - "cpw"
+  - "alexbegt"
+  - "progwml6"
+credits:
+  - "IronChest Developers"
+depends:
+  - blueberry
+description:
+  - "New chests with larger sizes, with in-place upgrade items."
+  - "The feature chest is the crystal chest, which is transparent - some inventory contents are visible without opening the chest"

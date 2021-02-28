@@ -3,11 +3,12 @@ package com.progwml6.ironchest.common.block.tileentity;
 import com.progwml6.ironchest.common.block.IronChestsBlocks;
 import com.progwml6.ironchest.common.block.IronChestsTypes;
 import com.progwml6.ironchest.common.inventory.IronChestContainer;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collections;
 
@@ -19,13 +20,13 @@ public class CrystalChestTileEntity extends GenericIronChestTileEntity {
 
   private boolean hadStuff;
 
-  public CrystalChestTileEntity() {
-    super(IronChestsTileEntityTypes.CRYSTAL_CHEST.get(), IronChestsTypes.CRYSTAL, IronChestsBlocks.CRYSTAL_CHEST::get);
+  public CrystalChestTileEntity(BlockPos blockPos, BlockState blockState) {
+    super(IronChestsTileEntityTypes.CRYSTAL_CHEST.get(), blockPos, blockState, IronChestsTypes.CRYSTAL, IronChestsBlocks.CRYSTAL_CHEST::get);
     this.topStacks = NonNullList.<ItemStack>withSize(8, ItemStack.EMPTY);
   }
 
   @Override
-  protected Container createMenu(int id, PlayerInventory playerInventory) {
+  protected AbstractContainerMenu createMenu(int id, Inventory playerInventory) {
     return IronChestContainer.createCrystalContainer(id, playerInventory, this);
   }
 
@@ -33,7 +34,7 @@ public class CrystalChestTileEntity extends GenericIronChestTileEntity {
   public void tick() {
     super.tick();
 
-    if (!this.world.isRemote && this.inventoryTouched) {
+    if (!this.level.isClientSide && this.inventoryTouched) {
       this.inventoryTouched = false;
 
       this.sortTopStacks();
@@ -48,10 +49,10 @@ public class CrystalChestTileEntity extends GenericIronChestTileEntity {
   }
 
   @Override
-  public ItemStack getStackInSlot(int index) {
+  public ItemStack getItem(int index) {
     this.inventoryTouched = true;
 
-    return super.getStackInSlot(index);
+    return super.getItem(index);
   }
 
   public NonNullList<ItemStack> getTopItems() {
@@ -59,25 +60,25 @@ public class CrystalChestTileEntity extends GenericIronChestTileEntity {
   }
 
   private void sortTopStacks() {
-    if (!this.getChestType().isTransparent() || (this.world != null && this.world.isRemote)) {
+    if (!this.getChestType().isTransparent() || (this.level != null && this.level.isClientSide)) {
       return;
     }
 
-    NonNullList<ItemStack> tempCopy = NonNullList.<ItemStack>withSize(this.getSizeInventory(), ItemStack.EMPTY);
+    NonNullList<ItemStack> tempCopy = NonNullList.<ItemStack>withSize(this.getContainerSize(), ItemStack.EMPTY);
 
     boolean hasStuff = false;
 
     int compressedIdx = 0;
 
     mainLoop:
-    for (int i = 0; i < this.getSizeInventory(); i++) {
+    for (int i = 0; i < this.getContainerSize(); i++) {
       ItemStack itemStack = this.getItems().get(i);
 
       if (!itemStack.isEmpty()) {
         for (int j = 0; j < compressedIdx; j++) {
           ItemStack tempCopyStack = tempCopy.get(j);
 
-          if (ItemStack.areItemsEqualIgnoreDurability(tempCopyStack, itemStack)) {
+          if (ItemStack.isSameIgnoreDurability(tempCopyStack, itemStack)) {
             if (itemStack.getCount() != tempCopyStack.getCount()) {
               tempCopyStack.grow(itemStack.getCount());
             }
@@ -101,10 +102,10 @@ public class CrystalChestTileEntity extends GenericIronChestTileEntity {
         this.getTopItems().set(i, ItemStack.EMPTY);
       }
 
-      if (this.world != null) {
-        BlockState iblockstate = this.world.getBlockState(this.pos);
+      if (this.level != null) {
+        BlockState iblockstate = this.level.getBlockState(this.worldPosition);
 
-        this.world.notifyBlockUpdate(this.pos, iblockstate, iblockstate, 3);
+        this.level.sendBlockUpdated(this.worldPosition, iblockstate, iblockstate, 3);
       }
 
       return;
@@ -142,10 +143,10 @@ public class CrystalChestTileEntity extends GenericIronChestTileEntity {
       this.getTopItems().set(i, ItemStack.EMPTY);
     }
 
-    if (this.world != null) {
-      BlockState iblockstate = this.world.getBlockState(this.pos);
+    if (this.level != null) {
+      BlockState iblockstate = this.level.getBlockState(this.worldPosition);
 
-      this.world.notifyBlockUpdate(this.pos, iblockstate, iblockstate, 3);
+      this.level.sendBlockUpdated(this.worldPosition, iblockstate, iblockstate, 3);
     }
 
     sendTopStacksPacket();

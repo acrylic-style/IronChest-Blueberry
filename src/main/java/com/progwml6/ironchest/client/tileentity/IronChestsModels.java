@@ -2,17 +2,13 @@ package com.progwml6.ironchest.client.tileentity;
 
 import com.progwml6.ironchest.IronChests;
 import com.progwml6.ironchest.common.block.IronChestsTypes;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.blueberrymc.client.event.TextureStitchEvent;
+import net.blueberrymc.common.bml.event.EventHandler;
+import net.blueberrymc.common.bml.event.Listener;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Consumer;
-
-@Mod.EventBusSubscriber(modid = IronChests.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class IronChestsModels {
+public class IronChestsModels implements Listener {
 
   public static final ResourceLocation IRON_CHEST_LOCATION = new ResourceLocation(IronChests.MODID, "model/iron_chest");
   public static final ResourceLocation GOLD_CHEST_LOCATION = new ResourceLocation(IronChests.MODID, "model/gold_chest");
@@ -22,7 +18,7 @@ public class IronChestsModels {
   public static final ResourceLocation CRYSTAL_CHEST_LOCATION = new ResourceLocation(IronChests.MODID, "model/crystal_chest");
   public static final ResourceLocation OBSIDIAN_CHEST_LOCATION = new ResourceLocation(IronChests.MODID, "model/obsidian_chest");
   public static final ResourceLocation DIRT_CHEST_LOCATION = new ResourceLocation(IronChests.MODID, "model/dirt_chest");
-  public static final ResourceLocation VANLLA_CHEST_LOCATION = new ResourceLocation("entity/chest/normal");
+  public static final ResourceLocation VANILLA_CHEST_LOCATION = new ResourceLocation("entity/chest/normal");
 
   public static ResourceLocation chooseChestTexture(IronChestsTypes type) {
     switch (type) {
@@ -44,13 +40,13 @@ public class IronChestsModels {
         return DIRT_CHEST_LOCATION;
       case WOOD:
       default:
-        return VANLLA_CHEST_LOCATION;
+        return VANILLA_CHEST_LOCATION;
     }
   }
 
-  @SubscribeEvent
+  @EventHandler
   public static void onStitch(TextureStitchEvent.Pre event) {
-    if (!event.getMap().getTextureLocation().equals(Atlases.CHEST_ATLAS)) {
+    if (!event.getTextureAtlas().location().equals(Sheets.CHEST_SHEET)) {
       return;
     }
 

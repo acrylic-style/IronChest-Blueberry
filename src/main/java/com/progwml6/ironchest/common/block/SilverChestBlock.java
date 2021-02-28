@@ -1,11 +1,10 @@
 package com.progwml6.ironchest.common.block;
 
-import com.progwml6.ironchest.common.block.tileentity.CopperChestTileEntity;
 import com.progwml6.ironchest.common.block.tileentity.IronChestsTileEntityTypes;
 import com.progwml6.ironchest.common.block.tileentity.SilverChestTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SilverChestBlock extends GenericIronChestBlock {
 
@@ -14,7 +13,7 @@ public class SilverChestBlock extends GenericIronChestBlock {
   }
 
   @Override
-  public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-    return new SilverChestTileEntity();
+  public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    return new SilverChestTileEntity(pos, state);
   }
 }
