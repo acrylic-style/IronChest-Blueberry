@@ -20,7 +20,7 @@ repositories {
 group = "com.progwml6.ironchest"
 
 dependencies {
-    compileOnly 'net.blueberrymc:blueberry:21w08b'
+    compileOnly 'net.blueberrymc:blueberry:21w10a'
     // compile against the JEI API but do not include it at runtime
     //compileOnly "mezz.jei:jei-1.16.2:${jei_version}:api"
     // at runtime, use the full JEI jar

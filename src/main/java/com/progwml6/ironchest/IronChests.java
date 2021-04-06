@@ -25,10 +25,11 @@ public class IronChests extends BlueberryMod {
     }
   });
   */
-  public static final CreativeModeTab IRONCHESTS_ITEM_GROUP = CreativeModeTab.TAB_DECORATIONS;
+  public static CreativeModeTab IRONCHESTS_ITEM_GROUP;
 
   @Override
   public void onPreInit() {
+    IRONCHESTS_ITEM_GROUP = CreativeModeTab.TAB_DECORATIONS;
     IronChestsBlocks.BLOCKS.registerAll();
     IronChestsItems.ITEMS.registerAll();
     IronChestsTileEntityTypes.TILE_ENTITIES.registerAll();
@@ -39,10 +40,6 @@ public class IronChests extends BlueberryMod {
   public void onInit() {
     if (Blueberry.isClient()) {
       Blueberry.getEventManager().registerEvents(this, new IronChestsModels());
-      System.out.println(IronChestsContainerTypes.IRON_CHEST.get());
-      System.out.println(IronChestsContainerTypes.IRON_CHEST.get());
-      System.out.println(IronChestsContainerTypes.IRON_CHEST.get());
-      System.out.println(IronChestsContainerTypes.IRON_CHEST.get());
       ScreenManager.registerFactory(IronChestsContainerTypes.IRON_CHEST.get(), IronChestScreen::new);
       ScreenManager.registerFactory(IronChestsContainerTypes.GOLD_CHEST.get(), IronChestScreen::new);
       ScreenManager.registerFactory(IronChestsContainerTypes.DIAMOND_CHEST.get(), IronChestScreen::new);
